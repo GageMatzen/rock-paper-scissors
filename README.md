@@ -1,3 +1,4 @@
+
 # Rock Paper Scissors
 
 A browser-based Rock Paper Scissors game built with vanilla JavaScript. Played entirely through the browser console — no UI required.
@@ -22,3 +23,5 @@ rock-paper-scissors/
 ## About
 
 Built as part of [The Odin Project](https://www.theodinproject.com/) Foundations curriculum. Game logic and project structure developed with assistance from Claude (Anthropic).
+
+

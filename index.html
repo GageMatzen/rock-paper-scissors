@@ -4,12 +4,236 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rock Paper Scissors</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+      :root {
+        --bg:        #0e0e0e;
+        --panel:     #161616;
+        --border:    #2a2a2a;
+        --accent:    #e8ff47;
+        --text:      #f0f0f0;
+        --muted:     #555;
+        --rock:      #ff6b6b;
+        --paper:     #4ecdc4;
+        --scissors:  #ffe66d;
+      }
+ 
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'DM Mono', monospace;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+        padding: 2rem;
+      }
+ 
+      h1 {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(3rem, 8vw, 6rem);
+        letter-spacing: 0.08em;
+        color: var(--accent);
+        text-align: center;
+        line-height: 1;
+      }
+ 
+      /* Score board */
+      .scoreboard {
+        display: flex;
+        gap: 3rem;
+        align-items: center;
+      }
+ 
+      .score-block {
+        text-align: center;
+      }
+ 
+      .score-block .label {
+        font-size: 0.65rem;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+      }
+ 
+      .score-block .number {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 3.5rem;
+        line-height: 1;
+        color: var(--text);
+        transition: color 0.2s;
+      }
+ 
+      .score-block.human .number  { color: var(--accent); }
+      .score-block.computer .number { color: var(--rock); }
+ 
+      .score-divider {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2rem;
+        color: var(--border);
+      }
+ 
+      /* Buttons */
+      .buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+ 
+      .choice-btn {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        color: var(--text);
+        font-family: 'DM Mono', monospace;
+        font-size: 0.8rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        padding: 1.2rem 2rem;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        position: relative;
+        overflow: hidden;
+      }
+ 
+      .choice-btn .emoji {
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+ 
+      .choice-btn[data-choice="rock"]:hover     { border-color: var(--rock);     color: var(--rock);     box-shadow: 0 0 20px rgba(255,107,107,0.2); }
+      .choice-btn[data-choice="paper"]:hover    { border-color: var(--paper);    color: var(--paper);    box-shadow: 0 0 20px rgba(78,205,196,0.2); }
+      .choice-btn[data-choice="scissors"]:hover { border-color: var(--scissors); color: var(--scissors); box-shadow: 0 0 20px rgba(255,230,109,0.2); }
+ 
+      .choice-btn:active { transform: scale(0.97); }
+      .choice-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+ 
+      /* Result display */
+      .result-box {
+        border: 1px solid var(--border);
+        background: var(--panel);
+        padding: 1.25rem 2rem;
+        text-align: center;
+        min-width: 320px;
+        min-height: 80px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+      }
+ 
+      .result-round {
+        font-size: 0.65rem;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+ 
+      .result-message {
+        font-size: 1rem;
+        letter-spacing: 0.05em;
+        color: var(--text);
+        transition: color 0.2s;
+      }
+ 
+      .result-message.win  { color: var(--accent); }
+      .result-message.lose { color: var(--rock); }
+      .result-message.tie  { color: var(--muted); }
+ 
+      /* Game over banner */
+      .game-over {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        text-align: center;
+      }
+ 
+      .game-over.visible { display: flex; }
+ 
+      .game-over-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(2rem, 6vw, 4rem);
+        letter-spacing: 0.1em;
+        color: var(--accent);
+      }
+ 
+      .game-over-sub {
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+ 
+      .play-again-btn {
+        margin-top: 0.5rem;
+        background: var(--accent);
+        color: var(--bg);
+        border: none;
+        font-family: 'DM Mono', monospace;
+        font-size: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        padding: 0.9rem 2.5rem;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+ 
+      .play-again-btn:hover { opacity: 0.85; }
+    </style>
   </head>
   <body>
-    
-    <h1>Rock Paper Scissors</h1>  
-    <!--  Link external JS file — keeps HTML clean -->
+ 
+    <h1>Rock<br>Paper<br>Scissors</h1>
+ 
+    <!-- Score -->
+    <div class="scoreboard">
+      <div class="score-block human">
+        <div class="label">You</div>
+        <div class="number" id="human-score">0</div>
+      </div>
+      <div class="score-divider">—</div>
+      <div class="score-block computer">
+        <div class="label">CPU</div>
+        <div class="number" id="computer-score">0</div>
+      </div>
+    </div>
+ 
+    <!-- Choice buttons -->
+    <div class="buttons" id="buttons">
+      <button class="choice-btn" data-choice="rock">
+        <span class="emoji">🪨</span>Rock
+      </button>
+      <button class="choice-btn" data-choice="paper">
+        <span class="emoji">📄</span>Paper
+      </button>
+      <button class="choice-btn" data-choice="scissors">
+        <span class="emoji">✂️</span>Scissors
+      </button>
+    </div>
+ 
+    <!-- Round result -->
+    <div class="result-box">
+      <div class="result-round" id="result-round">First to 5 wins</div>
+      <div class="result-message" id="result-message">Make your move</div>
+    </div>
+ 
+    <!-- Game over -->
+    <div class="game-over" id="game-over">
+      <div class="game-over-title" id="game-over-title"></div>
+      <div class="game-over-sub" id="game-over-sub"></div>
+      <button class="play-again-btn" id="play-again">Play Again</button>
+    </div>
+ 
     <script src="script.js" defer></script>
-
   </body>
 </html>

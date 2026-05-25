@@ -1,6 +1,9 @@
 
 # Rock Paper Scissors
 
+## Live Demo
+[Play it here](https://gagematzen.github.io/rock-paper-scissors/)
+
 A browser-based Rock Paper Scissors game built with vanilla JavaScript. Played entirely through the browser console — no UI required.
 
 ## How to Play
